@@ -1,0 +1,6 @@
+build-tmp/
+*.zip
+
+kaleidos_clip.3dm
+
+kaleidos_clip.ai
