@@ -25,7 +25,7 @@ public PImage logo;
 public int angle;
 
 void setup(){
-	size(1040, 480);
+	size(1060, 500);
 	frameRate(15);
 
 	logo = loadImage("logo.png");
@@ -33,7 +33,7 @@ void setup(){
 	DEPTH_MAP = new DepthMap(this, new int[]{980, 1027});
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
 	angle = int(DEPTH_MAP.getKinect().getTilt());
-	initControls(640, 0);
+	initControls(650, 0);
 }
 
 
@@ -50,23 +50,23 @@ void draw() {
 			image(logo, 0, 0);
 			break;
 		case 1 :
-			image(DEPTH_MAP.getRawDepthImage(), 0, 0);
+			image(DEPTH_MAP.getRawDepthImage(), 10, 10);
 			noStroke();
 			fill(0, 255*.7);
-			rect(0, 0, 640, 480);
+			rect(10, 10, 640, 480);
 			image(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip().x, DEPTH_MAP.getAbsoluteClip().y);
 			DEPTH_MAP.drawClip();
 			break;
 		case 2 :
-			image(BLOB_DETECTOR.preProcessedImage, 0, 0);
+			image(BLOB_DETECTOR.preProcessedImage, 10, 10);
 			DEPTH_MAP.drawClip();
 			break;
 		case 3 :
-			image(BLOB_DETECTOR.processedImage, 0, 0);
+			image(BLOB_DETECTOR.processedImage, 10, 10);
 			DEPTH_MAP.drawClip();
 			break;
 		case 4 :
-			image(BLOB_DETECTOR.contoursImage, 0, 0);
+			image(BLOB_DETECTOR.contoursImage, 10, 10);
 			DEPTH_MAP.drawClip();
 			break;
 	}

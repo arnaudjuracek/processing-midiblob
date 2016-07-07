@@ -33,7 +33,7 @@ public class DepthMap{
 
 			this.img = new PImage(this.kinect.width, this.kinect.height);
 			this.SMOOTH_FRAME = false;
-			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
+			this.clip = new Rectangle(10, 10, this.kinect.width, this.kinect.height);
 		}
 	}
 

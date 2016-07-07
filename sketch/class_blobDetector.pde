@@ -51,8 +51,7 @@ public class BlobDetector{
 			opencv.adaptiveThreshold(thresholdBlockSize, thresholdConstant);
 		} else opencv.threshold(threshold);
 
-		// Invert (black bg, white blobs)
-		// opencv.invert();
+		if(invert) opencv.invert();
 
 		// Reduce noise - Dilate and erode to close holes
 		opencv.dilate();
@@ -166,34 +165,13 @@ public class BlobDetector{
 		Contour contour = newContours.get(i);
 		Rectangle r = contour.getBoundingBox();
 
-		if (//(contour.area() > 0.9 * src.width * src.height) ||
-			(r.width < blobSizeThreshold || r.height < blobSizeThreshold))
-		  continue;
-
-		newBlobs.add(contour);
+		if (r.width*r.height > map(blob_size_min, 0, 100, 0, 640*480)
+			&& r.width*r.height < map(blob_size_max, 0, 100, 0, 640*480)){
+			newBlobs.add(contour);
+		}
 	  }
 
 	  return newBlobs;
-	}
-
-
-
-
-
-	private void displayImages() {
-	  	pushMatrix();
-	  		scale(0.5);
-	  		image(preProcessedImage, src.width, 0);
-	  		image(processedImage, 0, src.height);
-	  		image(src, src.width, src.height);
-	  	popMatrix();
-
-	  	stroke(255);
-	  	fill(255);
-	  	textSize(12);
-	  	text("Pre-processed Image", src.width/2 + 10, 25);
-	  	text("Processed Image", 10, src.height/2 + 25);
-	  	text("Tracked Points", src.width/2 + 10, src.height/2 + 25);
 	}
 
 	private void displayBlobs() {
@@ -201,23 +179,5 @@ public class BlobDetector{
 			strokeWeight(1);
 			b.display();
 	  	}
-	}
-
-	void displayContoursBoundingBoxes() {
-
-	  for (int i=0; i<contours.size(); i++) {
-
-		Contour contour = contours.get(i);
-		Rectangle r = contour.getBoundingBox();
-
-		if (//(contour.area() > 0.9 * src.width * src.height) ||
-			(r.width < blobSizeThreshold || r.height < blobSizeThreshold))
-		  continue;
-
-		stroke(255, 0, 0);
-		fill(255, 0, 0, 150);
-		strokeWeight(2);
-		rect(r.x, r.y, r.width, r.height);
-	  }
 	}
 }

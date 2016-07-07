@@ -1,10 +1,12 @@
 public ControlP5 cp5;
 public RadioButton visibleSnapshot_toggle;
-
+public Range blobsize_slider;
 public Println console;
 public Textarea console_area;
 public float contrast = 1.35;
 public int buttonColor, buttonBgColor,
+	blob_size_min = 0,
+	blob_size_max = 100,
 	visibleSnapshot = 0,
 	threshold = 75,
 	thresholdBlockSize = 489,
@@ -14,6 +16,7 @@ public int buttonColor, buttonBgColor,
 	minDepth = 0,
 	maxDepth = 2047;
 public boolean
+	invert = false,
 	show_blobs = false,
 	useAdaptiveThreshold = false;
 
@@ -35,7 +38,7 @@ void initControls(int x, int y) {
 		.addItem("1",1)
 		.addItem("2",2)
 		.addItem("3",3)
-		.addItem("4",4)
+		// .addItem("4",4)
 		.hideLabels();
 	visibleSnapshot_toggle.activate(0);
 
@@ -58,6 +61,17 @@ void initControls(int x, int y) {
 		.setPosition(x, y+=21)
 		.setSize(125, 20)
 		.setRange(0.0, 10.0);
+
+	cp5.addToggle("invert")
+		.setLabel("invert")
+		.setColorLabel(color(0))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20,20)
+		.setPosition(x, y+=21)
+		.getCaptionLabel()
+		.getStyle()
+		.setMargin(-19,0,0,25);
 
 	// -------------------------------------------------------------------------
 
@@ -111,28 +125,31 @@ void initControls(int x, int y) {
 		.setSize(125, 20)
 		.setRange(1, 100);
 
-	// Slider for minimum blob size
-	cp5.addSlider("blobSizeThreshold")
-		.setLabel("min blob size")
+	blobsize_slider = cp5.addRange("blobSizeThreshold")
+		.setLabel("blob size range")
 		.setColorLabel(color(0))
-		.setColorBackground(color(14, 0, 132))
-		.setColorForeground(color(250, 0 ,100))
+		.setBroadcast(false)
 		.setPosition(x, y+=21)
 		.setSize(125, 20)
-		.setRange(0, 100);
+		.setHandleSize(5)
+		.setRange(0, 50)
+		.setRangeValues(3, 50)
+		.setBroadcast(true)
+		.setColorForeground(color(250, 0, 100))
+		.setColorBackground(color(14, 0, 132));
 
 
 	// -------------------------------------------------------------------------
 
-  	console = cp5.addConsole(
-  				cp5.addTextarea("txt")
-                  	.setPosition(x+=210, y=10)
-                  	.setSize((width-x-10), (height-y-10))
-                  	.setFont(createFont("", 10))
-                  	.setLineHeight(14)
-                  	.setColor(color(0))
-                  	.setColorBackground(color(255))
-                  	.setColorForeground(color(250, 0, 100)));
+	console = cp5.addConsole(
+				cp5.addTextarea("txt")
+					.setPosition(x+=210, y=10)
+					.setSize((width-x-10), (height-y-10))
+					.setFont(createFont("", 10))
+					.setLineHeight(14)
+					.setColor(color(0))
+					.setColorBackground(color(255))
+					.setColorForeground(color(250, 0, 100)));
 
 	setLock(cp5.getController("thresholdBlockSize"), true);
 	setLock(cp5.getController("thresholdConstant"), true);
@@ -166,7 +183,14 @@ void setLock(Controller theController, boolean theValue) {
 }
 
 void controlEvent(ControlEvent theEvent) {
-  	if(theEvent.isFrom(visibleSnapshot_toggle)) {
-    	visibleSnapshot = int(theEvent.getGroup().getValue());
-  	}
+	if(theEvent.isFrom(visibleSnapshot_toggle)) {
+		visibleSnapshot = int(theEvent.getGroup().getValue());
+	}
+	if(theEvent.isFrom("blobSizeThreshold")) {
+		// min and max values are stored in an array.
+		// access this array with controller().arrayValue().
+		// min is at index 0, max is at index 1.
+		blob_size_min = int(theEvent.getController().getArrayValue(0));
+		blob_size_max = int(theEvent.getController().getArrayValue(1));
+	}
 }
