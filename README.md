@@ -1,12 +1,8 @@
-# processing-kaleidos_coy11
-Tweets' videomapping using Processing and Syphon
+# processing-midiblob
+Send MIDI signals when the user moves.
 
 ## Authors
 Arnaud Juracek — http://arnaudjuracek.fr/
-####Kaleidos
-- Tom Hebrard — http://tomhebrard.com/
-- Paul Vivien - http://paulvivien.fr/
-- Paul Appert —
 
 ## License
-GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+`GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007`
