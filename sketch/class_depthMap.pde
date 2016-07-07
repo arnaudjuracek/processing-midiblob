@@ -5,6 +5,7 @@ public class DepthMap{
 	private PApplet parent;
 
 	private Kinect kinect;
+	private Capture webcam;
 	private int[] depthThreshold = {0, 2047};
 	private PImage img, pimg;
 
@@ -15,17 +16,25 @@ public class DepthMap{
 	// -------------------------------------------------------------------------
 	public DepthMap(PApplet parent, int[] depthThreshold){
 		this.parent = parent;
+		this.depthThreshold = depthThreshold;
 
 		this.kinect = new Kinect(parent);
-		this.kinect.initDepth();
-		this.kinect.enableColorDepth(true);
 
-		this.depthThreshold = depthThreshold;
-		this.img = new PImage(this.kinect.width, this.kinect.height);
-		this.pimg = new PImage(this.kinect.width, this.kinect.height);
-		this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
+		if (this.kinect.numDevices() > 0) {
+			this.kinect.initDepth();
+			this.kinect.enableColorDepth(true);
 
-		println(this.kinect.width + "*" + this.kinect.height);
+			this.img = new PImage(this.kinect.width, this.kinect.height);
+			this.pimg = new PImage(this.kinect.width, this.kinect.height);
+			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
+		}else{
+			this.webcam = new Capture(parent, 640, 480);
+			this.webcam.start();
+
+			this.img = new PImage(this.kinect.width, this.kinect.height);
+			this.SMOOTH_FRAME = false;
+			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
+		}
 	}
 
 	public DepthMap(PApplet parent){ this(parent, new int[]{0, 2047}); }
@@ -35,6 +44,17 @@ public class DepthMap{
 	// -------------------------------------------------------------------------
 	private PImage update(){ return this.update(false); }
 	private PImage update(boolean forceUpdate){
+		if (this.webcam != null) return this.update_webcam();
+		else return this.update_kinect(forceUpdate);
+	}
+
+	private PImage update_webcam(){
+		if(this.webcam.available()) this.webcam.read();
+		this.img = this.webcam;
+		return this.img;
+	}
+
+	private PImage update_kinect(boolean forceUpdate){
 		if(forceUpdate) this.img.pixels = new int[this.img.pixels.length];
 
 		int[] rawDepth = this.kinect.getRawDepth();
@@ -94,7 +114,7 @@ public class DepthMap{
 	public void drawClip(){
 		pushStyle();
 		noFill();
-		strokeWeight(2);
+		strokeWeight(4);
 		stroke(250, 0, 100);
 
 		Rectangle c = this.getClip();

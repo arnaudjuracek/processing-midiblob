@@ -1,90 +1,69 @@
-/**
- * Blob Class
- *
- * Based on this example by Daniel Shiffman:
- * http://shiffman.net/2011/04/26/opencv-matching-faces-over-time/
- *
- * @author: Jordi Tost (@jorditost)
- *
- * University of Applied Sciences Potsdam, 2014
- */
+public class Blob {
+	private PApplet parent;
+	public Contour contour;
+	public boolean available;
+	public boolean delete;
 
-class Blob {
+	private int initTimer = 5; //127;
+	public int timer;
 
-  private PApplet parent;
+	int id;
 
-  // Contour
-  public Contour contour;
+	Blob(PApplet parent, int id, Contour c) {
+		this.parent = parent;
+		this.id = id;
+		this.contour = new Contour(parent, c.pointMat);
 
-  // Am I available to be matched?
-  public boolean available;
+		available = true;
+		delete = false;
 
-  // Should I be deleted?
-  public boolean delete;
+		timer = initTimer;
+	}
 
-  // How long should I live if I have disappeared?
-  private int initTimer = 5; //127;
-  public int timer;
+	void display() {
+		Rectangle r = contour.getBoundingBox();
 
-  // Unique ID for each blob
-  int id;
+		float opacity = map(timer, 0, initTimer, 0, 127);
 
-  // Make me
-  Blob(PApplet parent, int id, Contour c) {
-    this.parent = parent;
-    this.id = id;
-    this.contour = new Contour(parent, c.pointMat);
+		fill(14, 0, 132, opacity);
+		stroke(255);
+		strokeWeight(2);
+		rect(r.x, r.y, r.width, r.height);
 
-    available = true;
-    delete = false;
+		fill(255);
+		textSize(26);
+		text(""+id, r.x+10, r.y+30);
+	}
 
-    timer = initTimer;
-  }
 
-  // Show me
-  void display() {
-    Rectangle r = contour.getBoundingBox();
+	void update(Contour newC) {
 
-    float opacity = map(timer, 0, initTimer, 0, 127);
-    fill(0,0,255,opacity);
-    stroke(0,0,255);
-    rect(r.x, r.y, r.width, r.height);
-    fill(255,2*opacity);
-    textSize(26);
-    text(""+id, r.x+10, r.y+30);
-  }
+		contour = new Contour(parent, newC.pointMat);
 
-  // Give me a new contour for this blob (shape, points, location, size)
-  // Oooh, it would be nice to lerp here!
-  void update(Contour newC) {
+		// Is there a way to update the contour's points without creating a new one?
+		/*ArrayList<PVector> newPoints = newC.getPoints();
+		Point[] inputPoints = new Point[newPoints.size()];
 
-    contour = new Contour(parent, newC.pointMat);
+		for(int i = 0; i < newPoints.size(); i++){
+		  inputPoints[i] = new Point(newPoints.get(i).x, newPoints.get(i).y);
+		}
+		contour.loadPoints(inputPoints);*/
 
-    // Is there a way to update the contour's points without creating a new one?
-    /*ArrayList<PVector> newPoints = newC.getPoints();
-    Point[] inputPoints = new Point[newPoints.size()];
+		timer = initTimer;
+	}
 
-    for(int i = 0; i < newPoints.size(); i++){
-      inputPoints[i] = new Point(newPoints.get(i).x, newPoints.get(i).y);
-    }
-    contour.loadPoints(inputPoints);*/
+	void countDown() {
+		timer--;
+	}
 
-    timer = initTimer;
-  }
+	// I am deed, delete me
+	boolean dead() {
+		if (timer < 0) return true;
+		return false;
+	}
 
-  // Count me down, I am gone
-  void countDown() {
-    timer--;
-  }
-
-  // I am deed, delete me
-  boolean dead() {
-    if (timer < 0) return true;
-    return false;
-  }
-
-  public Rectangle getBoundingBox() {
-    return contour.getBoundingBox();
-  }
+	public Rectangle getBoundingBox() {
+		return contour.getBoundingBox();
+	}
 }
 

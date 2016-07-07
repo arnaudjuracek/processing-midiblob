@@ -1,47 +1,77 @@
+/**
+ * kaleidos_midiblob
+ * @author: Arnaud Juracek (@arnaudjuracek)
+ * @date: 2016-07-04
+ * @url: https://github.com/arnaudjuracek/processing-midiblob
+ *
+ * Persistence algorithm by Daniel Shifmann:
+ * http://shiffman.net/2011/04/26/opencv-matching-faces-over-time/
+ *
+ * Based on openCV Image filtering by Jordi Tost
+ * https://github.com/jorditost/ImageFiltering/tree/master/ImageFilteringWithBlobPersistence
+ */
+
 import controlP5.*;
 import gab.opencv.*;
 import java.awt.Rectangle;
 import org.openkinect.freenect.*;
 import org.openkinect.processing.*;
+import processing.video.*;
 
 
 public DepthMap DEPTH_MAP;
 public BlobDetector BLOB_DETECTOR;
+public PImage logo;
 public int angle;
 
 void setup(){
-	size(1480, 480);
+	size(1040, 480);
 	frameRate(15);
+
+	logo = loadImage("logo.png");
 
 	DEPTH_MAP = new DepthMap(this, new int[]{980, 1027});
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
 	angle = int(DEPTH_MAP.getKinect().getTilt());
-	initControls(int(width*.5));
+	initControls(640, 0);
 }
 
 
 
 // -------------------------------------------------------------------------
 void draw() {
-	surface.setTitle(int(frameRate)+"fps" + " — " + "THRESHOLD: [" + DEPTH_MAP.getDepthThreshold()[0] + ", " + DEPTH_MAP.getDepthThreshold()[1] + "]");
-
-	// if(mousePressed) image(DEPTH_MAP.getRawDepthImage(), 0, 0);
-	// else image(DEPTH_MAP.getDepthImage(), 0, 0);
-
-	image(DEPTH_MAP.getRawDepthImage(), 0, 0);
-
-	fill(0, 255*.7);
-	rect(0, 0, width, height);
-	image(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip().x, DEPTH_MAP.getAbsoluteClip().y);
-	DEPTH_MAP.drawClip();
-
-
+	surface.setTitle("kaleidos-midiblob — " +int(frameRate)+"fps");
+	background(255);
 
 	BLOB_DETECTOR.detect(DEPTH_MAP.getDepthImage(), DEPTH_MAP.getAbsoluteClip());
-	pushMatrix();
-		translate(width/2, 0);
-		BLOB_DETECTOR.draw();
-	popMatrix();
+
+	switch(visibleSnapshot){
+		case 0 :
+			image(logo, 0, 0);
+			break;
+		case 1 :
+			image(DEPTH_MAP.getRawDepthImage(), 0, 0);
+			noStroke();
+			fill(0, 255*.7);
+			rect(0, 0, 640, 480);
+			image(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip().x, DEPTH_MAP.getAbsoluteClip().y);
+			DEPTH_MAP.drawClip();
+			break;
+		case 2 :
+			image(BLOB_DETECTOR.preProcessedImage, 0, 0);
+			DEPTH_MAP.drawClip();
+			break;
+		case 3 :
+			image(BLOB_DETECTOR.processedImage, 0, 0);
+			DEPTH_MAP.drawClip();
+			break;
+		case 4 :
+			image(BLOB_DETECTOR.contoursImage, 0, 0);
+			DEPTH_MAP.drawClip();
+			break;
+	}
+
+	if(show_blobs) BLOB_DETECTOR.displayBlobs();
 }
 
 
@@ -50,7 +80,7 @@ void draw() {
 boolean dragging = false;
 
 void mouseDragged(){
-	if(mouseX > 0 && mouseX < DEPTH_MAP.getWidth() && mouseY > 0 && mouseY < DEPTH_MAP.getHeight()){
+	if(visibleSnapshot > 0 && mouseX > 0 && mouseX < DEPTH_MAP.getWidth() && mouseY > 0 && mouseY < DEPTH_MAP.getHeight()){
 		Rectangle c = DEPTH_MAP.getClip();
 
 		if(!dragging){
