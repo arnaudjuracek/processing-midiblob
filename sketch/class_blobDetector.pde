@@ -163,30 +163,29 @@ public class BlobDetector{
 
 
 
-
+	// -------------------------------------------------------------------------
 	ArrayList<Contour> getBlobsFromContours(ArrayList<Contour> newContours) {
+	  	ArrayList<Contour> newBlobs = new ArrayList<Contour>();
 
-	  ArrayList<Contour> newBlobs = new ArrayList<Contour>();
+	  	for (int i=0; i<newContours.size(); i++) {
+			Contour contour = newContours.get(i);
+			Rectangle r = contour.getBoundingBox();
 
-	  // Which of these contours are blobs?
-	  for (int i=0; i<newContours.size(); i++) {
+			if(r.width*r.height < map(blob_size_min, 0, 100, 0, 640*480)) continue;
+			if(r.width*r.height < map(blob_size_max, 0, 100, 0, 640*480)) newBlobs.add(contour);
+	  	}
 
-		Contour contour = newContours.get(i);
-		Rectangle r = contour.getBoundingBox();
-
-		if (r.width*r.height > map(blob_size_min, 0, 100, 0, 640*480)
-			&& r.width*r.height < map(blob_size_max, 0, 100, 0, 640*480)){
-			newBlobs.add(contour);
-		}
-	  }
-
-	  return newBlobs;
+	  	return newBlobs;
 	}
 
+
+
+	// -------------------------------------------------------------------------
 	private void displayBlobs() {
+		int i = 0;
 	  	for (Blob b : blobList) {
 			strokeWeight(1);
-			b.display();
+			b.display(i++);
 	  	}
 	}
 }

@@ -22,13 +22,12 @@ import processing.video.*;
 public DepthMap DEPTH_MAP;
 public BlobDetector BLOB_DETECTOR;
 public PImage logo;
-public int angle;
 
 public float contrast = 1.35;
 public int buttonColor, buttonBgColor,
 	visibleSnapshot = 1,
-	blob_size_min = 0,
-	blob_size_max = 100,
+	blob_size_min = 5,
+	blob_size_max = 50,
 	threshold = 75,
 	thresholdBlockSize = 489,
 	thresholdConstant = 45,
@@ -38,7 +37,7 @@ public int buttonColor, buttonBgColor,
 	maxDepth = 2047;
 public boolean
 	invert = false,
-	show_blobs = false,
+	show_blobs = true,
 	useAdaptiveThreshold = false;
 
 void setup(){
@@ -49,7 +48,7 @@ void setup(){
 
 	DEPTH_MAP = new DepthMap(this, new int[]{980, 1027});
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
-	angle = int(DEPTH_MAP.getKinect().getTilt());
+
 	initControls(650, 0);
 }
 
@@ -123,9 +122,7 @@ void mouseReleased(){
 
 
 void keyPressed() {
-  	if (keyCode == UP) DEPTH_MAP.getKinect().setTilt(constrain(angle++, 0, 30));
-	else if (keyCode == DOWN) DEPTH_MAP.getKinect().setTilt(constrain(angle--, 0, 30));
-  	else if (key == 'r') setup();
+	if (key == 'r') setup();
   	else if (key == 'a') DEPTH_MAP.getDepthThreshold()[0] = constrain(DEPTH_MAP.getDepthThreshold()[0]+1, 0, DEPTH_MAP.getDepthThreshold()[1]);
   	else if (key == 's') DEPTH_MAP.getDepthThreshold()[0] = constrain(DEPTH_MAP.getDepthThreshold()[0]-1, 0, DEPTH_MAP.getDepthThreshold()[1]);
   	else if (key == 'z') DEPTH_MAP.getDepthThreshold()[1] = constrain(DEPTH_MAP.getDepthThreshold()[1]+1, DEPTH_MAP.getDepthThreshold()[0], 2047);

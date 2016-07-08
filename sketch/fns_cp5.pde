@@ -117,7 +117,7 @@ void initControls(int x, int y) {
 		.setSize(125, 20)
 		.setHandleSize(5)
 		.setRange(0, 50)
-		.setRangeValues(3, 50)
+		.setRangeValues(blob_size_min, blob_size_max)
 		.setBroadcast(true)
 		.setColorForeground(color(250, 0, 100))
 		.setColorBackground(color(14, 0, 132));
