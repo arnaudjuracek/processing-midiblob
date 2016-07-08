@@ -1,6 +1,6 @@
 public ControlP5 cp5;
 public RadioButton visibleSnapshot_toggle;
-public Range blobsize_slider;
+public Range blobsize_slider, depth_range;
 public Println console;
 public Textarea console_area;
 public Chart graph;
@@ -10,6 +10,8 @@ public Chart graph;
 // -------------------------------------------------------------------------
 void initControls(int x, int y) {
 	x+=10; y+=10;
+	int w = 125;
+
 	if(cp5!=null) cp5.dispose(); // fix hard reset
 	cp5 = new ControlP5(this);
 
@@ -40,24 +42,39 @@ void initControls(int x, int y) {
 		.setMargin(-19,0,0,25);
 
 	cp5.addSlider("contrast")
+		.setLabel("") // label "contrast" is on the invert toggle ¯\_(ツ)_/¯
+		.setColorLabel(color(0))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setPosition(x, y+=21)
+		.setSize(w-21, 20)
+		.setRange(0.0, 10.0);
+
+	cp5.addToggle("invert")
 		.setLabel("contrast")
 		.setColorLabel(color(0))
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
-		.setPosition(x, y+=21)
-		.setSize(125, 20)
-		.setRange(0.0, 10.0);
-
-	cp5.addToggle("invert")
-		.setLabel("invert")
-		.setColorLabel(color(0))
-		.setColorBackground(color(14, 0, 132))
-		.setColorForeground(color(250, 0 ,100))
 		.setSize(20,20)
-		.setPosition(x, y+=21)
+		.setPosition(x+w-20, y)
 		.getCaptionLabel()
 		.getStyle()
 		.setMargin(-19,0,0,25);
+
+	// -------------------------------------------------------------------------
+
+	depth_range = cp5.addRange("depth_range")
+		.setLabel("depth range")
+		.setColorLabel(color(0))
+		.setBroadcast(false)
+		.setPosition(x, y+=21)
+		.setSize(w, 20)
+		.setHandleSize(5)
+		.setRange(0, 2047)
+		.setRangeValues(100, 1027)
+		.setBroadcast(true)
+		.setColorForeground(color(250, 0, 100))
+		.setColorBackground(color(14, 0, 132));
 
 	// -------------------------------------------------------------------------
 
@@ -78,7 +95,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setPosition(x, y+=21)
-		.setSize(125, 20)
+		.setSize(w, 20)
 		.setRange(0,255);
 
 	cp5.addSlider("thresholdBlockSize")
@@ -87,7 +104,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setPosition(x, y+=21)
-		.setSize(125, 20)
+		.setSize(w, 20)
 		.setRange(1,700);
 
 	cp5.addSlider("thresholdConstant")
@@ -96,7 +113,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setPosition(x, y+=21)
-		.setSize(125, 20)
+		.setSize(w, 20)
 		.setRange(-100,100);
 
 
@@ -108,7 +125,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setPosition(x, y+=41)
-		.setSize(125, 20)
+		.setSize(w, 20)
 		.setRange(1, 100);
 
 	blobsize_slider = cp5.addRange("blobSizeThreshold")
@@ -116,7 +133,7 @@ void initControls(int x, int y) {
 		.setColorLabel(color(0))
 		.setBroadcast(false)
 		.setPosition(x, y+=21)
-		.setSize(125, 20)
+		.setSize(w, 20)
 		.setHandleSize(5)
 		.setRange(0, 50)
 		.setRangeValues(blob_size_min, blob_size_max)
@@ -132,7 +149,7 @@ void initControls(int x, int y) {
 	// 	.setColorBackground(color(14, 0, 132))
 	// 	.setColorForeground(color(250, 0 ,100))
 	// 	.setPosition(x, y+=41)
-	// 	.setSize(125, 20)
+	// 	.setSize(w, 20)
 	// 	.setRange(0.0, 10.0);
 
 	// cp5.addSlider("filter_beta")
@@ -141,7 +158,7 @@ void initControls(int x, int y) {
 	// 	.setColorBackground(color(14, 0, 132))
 	// 	.setColorForeground(color(250, 0 ,100))
 	// 	.setPosition(x, y+=21)
-	// 	.setSize(125, 20)
+	// 	.setSize(w, 20)
 	// 	.setRange(0.0, 0.1);
 
 	cp5.addSlider("filter_threshold")
@@ -209,10 +226,11 @@ void controlEvent(ControlEvent theEvent) {
 		visibleSnapshot = int(theEvent.getGroup().getValue());
 	}
 	else if(theEvent.isFrom("blobSizeThreshold")) {
-		// min and max values are stored in an array.
-		// access this array with controller().arrayValue().
-		// min is at index 0, max is at index 1.
 		blob_size_min = int(theEvent.getController().getArrayValue(0));
 		blob_size_max = int(theEvent.getController().getArrayValue(1));
+	}
+	else if(theEvent.isFrom("depth_range") && INPUT != null){
+		INPUT.depthThreshold[0] = int(theEvent.getController().getArrayValue(0));
+		INPUT.depthThreshold[1] = int(theEvent.getController().getArrayValue(1));
 	}
 }
