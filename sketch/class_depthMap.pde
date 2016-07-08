@@ -1,4 +1,4 @@
-public class DepthMap{
+public class Input{
 
 	public boolean SMOOTH_FRAME = true;
 
@@ -14,7 +14,7 @@ public class DepthMap{
 
 
 	// -------------------------------------------------------------------------
-	public DepthMap(PApplet parent, int[] depthThreshold){
+	public Input(PApplet parent, int[] depthThreshold){
 		this.parent = parent;
 		this.depthThreshold = depthThreshold;
 
@@ -37,7 +37,7 @@ public class DepthMap{
 		}
 	}
 
-	public DepthMap(PApplet parent){ this(parent, new int[]{0, 2047}); }
+	public Input(PApplet parent){ this(parent, new int[]{0, 2047}); }
 
 
 

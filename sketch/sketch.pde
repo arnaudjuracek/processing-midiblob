@@ -19,7 +19,7 @@ import org.openkinect.processing.*;
 import processing.video.*;
 
 
-public DepthMap DEPTH_MAP;
+public Input INPUT;
 public BlobDetector BLOB_DETECTOR;
 public PImage logo;
 
@@ -46,7 +46,7 @@ void setup(){
 
 	logo = loadImage("logo.png");
 
-	DEPTH_MAP = new DepthMap(this, new int[]{980, 1027});
+	INPUT = new Input(this, new int[]{980, 1027});
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
 
 	initControls(650, 0);
@@ -59,7 +59,7 @@ void draw() {
 	surface.setTitle("kaleidos-midiblob — " +int(frameRate)+"fps");
 	background(255);
 
-	BLOB_DETECTOR.detect(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip());
+	BLOB_DETECTOR.detect(INPUT.getClippedDepthImage(), INPUT.getAbsoluteClip());
 
 	pushMatrix();
 	translate(10, 10);
@@ -68,24 +68,24 @@ void draw() {
 			image(logo, 0, 0);
 			break;
 		case 1 :
-			image(DEPTH_MAP.getRawDepthImage(), 0, 0);
+			image(INPUT.getRawDepthImage(), 0, 0);
 			noStroke();
 			fill(0, 255*.3);
 			rect(0, 0, 640, 480);
-			image(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip().x, DEPTH_MAP.getAbsoluteClip().y);
-			DEPTH_MAP.drawClip();
+			image(INPUT.getClippedDepthImage(), INPUT.getAbsoluteClip().x, INPUT.getAbsoluteClip().y);
+			INPUT.drawClip();
 			break;
 		case 2 :
 			image(BLOB_DETECTOR.preProcessedImage, 0, 0);
-			DEPTH_MAP.drawClip();
+			INPUT.drawClip();
 			break;
 		case 3 :
 			image(BLOB_DETECTOR.processedImage, 0, 0);
-			DEPTH_MAP.drawClip();
+			INPUT.drawClip();
 			break;
 		case 4 :
 			image(BLOB_DETECTOR.contoursImage, 0, 0);
-			DEPTH_MAP.drawClip();
+			INPUT.drawClip();
 			break;
 	}
 	if(show_blobs) BLOB_DETECTOR.displayBlobs();
@@ -101,8 +101,8 @@ void mouseDragged(){
 	int x = mouseX - 10,
 		y = mouseY - 10;
 
-	if(visibleSnapshot > 0 && x > 0 && x < DEPTH_MAP.getWidth() && y > 0 && y < DEPTH_MAP.getHeight()){
-		Rectangle c = DEPTH_MAP.getClip();
+	if(visibleSnapshot > 0 && x > 0 && x < INPUT.getWidth() && y > 0 && y < INPUT.getHeight()){
+		Rectangle c = INPUT.getClip();
 
 		if(!dragging){
 			dragging = true;
@@ -117,16 +117,16 @@ void mouseDragged(){
 
 void mouseReleased(){
 	dragging = false;
-	DEPTH_MAP.update(true);
+	INPUT.update(true);
 }
 
 
 void keyPressed() {
 	if (key == 'r') setup();
-  	else if (key == 'a') DEPTH_MAP.getDepthThreshold()[0] = constrain(DEPTH_MAP.getDepthThreshold()[0]+1, 0, DEPTH_MAP.getDepthThreshold()[1]);
-  	else if (key == 's') DEPTH_MAP.getDepthThreshold()[0] = constrain(DEPTH_MAP.getDepthThreshold()[0]-1, 0, DEPTH_MAP.getDepthThreshold()[1]);
-  	else if (key == 'z') DEPTH_MAP.getDepthThreshold()[1] = constrain(DEPTH_MAP.getDepthThreshold()[1]+1, DEPTH_MAP.getDepthThreshold()[0], 2047);
-  	else if (key == 'x') DEPTH_MAP.getDepthThreshold()[1] = constrain(DEPTH_MAP.getDepthThreshold()[1]-1, DEPTH_MAP.getDepthThreshold()[0], 2047);
+  	else if (key == 'a') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]+1, 0, INPUT.getDepthThreshold()[1]);
+  	else if (key == 's') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]-1, 0, INPUT.getDepthThreshold()[1]);
+  	else if (key == 'z') INPUT.getDepthThreshold()[1] = constrain(INPUT.getDepthThreshold()[1]+1, INPUT.getDepthThreshold()[0], 2047);
+  	else if (key == 'x') INPUT.getDepthThreshold()[1] = constrain(INPUT.getDepthThreshold()[1]-1, INPUT.getDepthThreshold()[0], 2047);
 
-  	else if (key == 'f') DEPTH_MAP.SMOOTH_FRAME = !DEPTH_MAP.SMOOTH_FRAME;
+  	else if (key == 'f') INPUT.SMOOTH_FRAME = !INPUT.SMOOTH_FRAME;
 }
