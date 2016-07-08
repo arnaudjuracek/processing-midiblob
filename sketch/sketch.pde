@@ -24,6 +24,23 @@ public BlobDetector BLOB_DETECTOR;
 public PImage logo;
 public int angle;
 
+public float contrast = 1.35;
+public int buttonColor, buttonBgColor,
+	visibleSnapshot = 1,
+	blob_size_min = 0,
+	blob_size_max = 100,
+	threshold = 75,
+	thresholdBlockSize = 489,
+	thresholdConstant = 45,
+	blobSizeThreshold = 20,
+	blurSize = 4,
+	minDepth = 0,
+	maxDepth = 2047;
+public boolean
+	invert = false,
+	show_blobs = false,
+	useAdaptiveThreshold = false;
+
 void setup(){
 	size(1060, 500);
 	frameRate(15);
@@ -43,35 +60,37 @@ void draw() {
 	surface.setTitle("kaleidos-midiblob — " +int(frameRate)+"fps");
 	background(255);
 
-	BLOB_DETECTOR.detect(DEPTH_MAP.getDepthImage(), DEPTH_MAP.getAbsoluteClip());
+	BLOB_DETECTOR.detect(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip());
 
+	pushMatrix();
+	translate(10, 10);
 	switch(visibleSnapshot){
 		case 0 :
 			image(logo, 0, 0);
 			break;
 		case 1 :
-			image(DEPTH_MAP.getRawDepthImage(), 10, 10);
+			image(DEPTH_MAP.getRawDepthImage(), 0, 0);
 			noStroke();
-			fill(0, 255*.7);
-			rect(10, 10, 640, 480);
+			fill(0, 255*.3);
+			rect(0, 0, 640, 480);
 			image(DEPTH_MAP.getClippedDepthImage(), DEPTH_MAP.getAbsoluteClip().x, DEPTH_MAP.getAbsoluteClip().y);
 			DEPTH_MAP.drawClip();
 			break;
 		case 2 :
-			image(BLOB_DETECTOR.preProcessedImage, 10, 10);
+			image(BLOB_DETECTOR.preProcessedImage, 0, 0);
 			DEPTH_MAP.drawClip();
 			break;
 		case 3 :
-			image(BLOB_DETECTOR.processedImage, 10, 10);
+			image(BLOB_DETECTOR.processedImage, 0, 0);
 			DEPTH_MAP.drawClip();
 			break;
 		case 4 :
-			image(BLOB_DETECTOR.contoursImage, 10, 10);
+			image(BLOB_DETECTOR.contoursImage, 0, 0);
 			DEPTH_MAP.drawClip();
 			break;
 	}
-
 	if(show_blobs) BLOB_DETECTOR.displayBlobs();
+	popMatrix();
 }
 
 
@@ -80,17 +99,20 @@ void draw() {
 boolean dragging = false;
 
 void mouseDragged(){
-	if(visibleSnapshot > 0 && mouseX > 0 && mouseX < DEPTH_MAP.getWidth() && mouseY > 0 && mouseY < DEPTH_MAP.getHeight()){
+	int x = mouseX - 10,
+		y = mouseY - 10;
+
+	if(visibleSnapshot > 0 && x > 0 && x < DEPTH_MAP.getWidth() && y > 0 && y < DEPTH_MAP.getHeight()){
 		Rectangle c = DEPTH_MAP.getClip();
 
 		if(!dragging){
 			dragging = true;
-			c.x = mouseX;
-			c.y = mouseY;
+			c.x = x;
+			c.y = y;
 		}
 
-		c.width = mouseX - c.x;
-		c.height = mouseY - c.y;
+		c.width = x - c.x;
+		c.height = y - c.y;
 	}
 }
 

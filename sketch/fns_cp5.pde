@@ -3,22 +3,6 @@ public RadioButton visibleSnapshot_toggle;
 public Range blobsize_slider;
 public Println console;
 public Textarea console_area;
-public float contrast = 1.35;
-public int buttonColor, buttonBgColor,
-	blob_size_min = 0,
-	blob_size_max = 100,
-	visibleSnapshot = 0,
-	threshold = 75,
-	thresholdBlockSize = 489,
-	thresholdConstant = 45,
-	blobSizeThreshold = 20,
-	blurSize = 4,
-	minDepth = 0,
-	maxDepth = 2047;
-public boolean
-	invert = false,
-	show_blobs = false,
-	useAdaptiveThreshold = false;
 
 
 
@@ -40,7 +24,7 @@ void initControls(int x, int y) {
 		.addItem("3",3)
 		// .addItem("4",4)
 		.hideLabels();
-	visibleSnapshot_toggle.activate(0);
+	visibleSnapshot_toggle.activate(visibleSnapshot);
 
 	cp5.addToggle("show_blobs")
 		.setLabel("blobs")

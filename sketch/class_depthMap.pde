@@ -31,9 +31,9 @@ public class DepthMap{
 			this.webcam = new Capture(parent, 640, 480);
 			this.webcam.start();
 
-			this.img = new PImage(this.kinect.width, this.kinect.height);
+			this.img = new PImage(this.webcam.width, this.webcam.height);
 			this.SMOOTH_FRAME = false;
-			this.clip = new Rectangle(10, 10, this.kinect.width, this.kinect.height);
+			this.clip = new Rectangle(0, 0, this.webcam.width, this.webcam.height);
 		}
 	}
 
@@ -92,10 +92,13 @@ public class DepthMap{
 	public Kinect getKinect(){ return this.kinect; }
 
 	public PImage getDepthImage(){ return this.update();}
-	public PImage getRawDepthImage(){ return this.kinect.getDepthImage(); }
+	public PImage getRawDepthImage(){
+		if (this.webcam != null) return this.update_webcam();
+		else return this.kinect.getDepthImage();
+	}
 	public PImage getClippedDepthImage(){
 		Rectangle c = this.getAbsoluteClip();
-		return this.update().get(c.x, c.y, c.width, c.height);
+		return this.update().get(c.x, c.y, c.width-c.x, c.height-c.y);
 	}
 
 	public Rectangle getClip(){ return this.clip; }
