@@ -139,7 +139,12 @@ void mouseReleased(){
 
 
 void keyPressed() {
-	if (key == 'r') setup();
+	if(keyCode == LEFT){
+		visibleSnapshot = (visibleSnapshot>0) ? visibleSnapshot-1 : 3;
+		visibleSnapshot_toggle.activate(visibleSnapshot);
+	}else if(keyCode == RIGHT) visibleSnapshot_toggle.activate(visibleSnapshot=++visibleSnapshot%4);
+
+	else if (key == 'r') setup();
   	else if (key == 'a') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]+1, 0, INPUT.getDepthThreshold()[1]);
   	else if (key == 's') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]-1, 0, INPUT.getDepthThreshold()[1]);
   	else if (key == 'z') INPUT.getDepthThreshold()[1] = constrain(INPUT.getDepthThreshold()[1]+1, INPUT.getDepthThreshold()[0], 2047);
