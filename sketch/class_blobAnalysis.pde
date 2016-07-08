@@ -1,6 +1,6 @@
 public class BlobAnalysis{
 	private PApplet parent;
-	private MidiWrapper MIDI;
+	public MidiWrapper MIDI;
 	private BlobDetector detector;
 	private Chart chart;
 	private SignalFilter filter;
@@ -18,10 +18,10 @@ public class BlobAnalysis{
 
 						.addDataSet("vf")
 						.setData("vf", new float[100])
-						.setColors("vf", color(250, 0, 100), color(250, 0, 100))
+						.setColors("vf", color(255), color(255))
 
 						.addDataSet("threshold")
-						.setColors("threshold", color(255), color(255))
+						.setColors("threshold", color(250, 0, 100), color(250, 0, 100))
 						.setData("threshold", new float[2])
 
 						.setStrokeWeight(3);

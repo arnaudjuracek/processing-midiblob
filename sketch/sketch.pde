@@ -50,16 +50,18 @@ public boolean
 	useAdaptiveThreshold = false;
 
 void setup(){
-	size(1060, 500);
+	size(1090, 500);
 	frameRate(15);
 
 	logo = loadImage("logo.png");
-	initControls(650, 0);
+	initControls(0, 0);
 
 
 	INPUT = new Input(this, new int[]{980, 1027});
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
 	BLOB_ANALYSIS = new BlobAnalysis(this, BLOB_DETECTOR, graph);
+
+	setLock(depth_range, (!INPUT.isKinect));
 }
 
 
@@ -72,7 +74,7 @@ void draw() {
 	BLOB_ANALYSIS.update();
 
 	pushMatrix();
-	translate(10, 10);
+	translate(40, 10);
 	String frame_name = "";
 	switch(visibleSnapshot){
 		case 0 :
@@ -115,7 +117,7 @@ void draw() {
 boolean dragging = false;
 
 void mouseDragged(){
-	int x = mouseX - 10,
+	int x = mouseX - 40,
 		y = mouseY - 10;
 
 	if(visibleSnapshot > 0 && x > 0 && x < INPUT.getWidth() && y > 0 && y < INPUT.getHeight()){
@@ -143,10 +145,36 @@ void keyPressed() {
 		visibleSnapshot = (visibleSnapshot>0) ? visibleSnapshot-1 : 3;
 		visibleSnapshot_toggle.activate(visibleSnapshot);
 	}else if(keyCode == RIGHT) visibleSnapshot_toggle.activate(visibleSnapshot=++visibleSnapshot%4);
-	else if (key == 's'){
-		cp5.saveProperties(("cp5.properties"));
-		println("properties saved.");
-	}
-	else if (key == 'r') setup();
+
+	else if (key == 's') save();
+	else if (key == 'r') reset();
+  	else if (key == 'l') load();
+
   	else if (key == 'f') INPUT.SMOOTH_FRAME = !INPUT.SMOOTH_FRAME;
+}
+
+void reset(){
+	setup();
+}
+
+void save(){
+	cp5.saveProperties(("cp5.properties"));
+	println("properties saved.");
+}
+
+void load(){
+	if(cp5!=null){
+		try{
+			cp5.loadProperties(sketchPath("cp5.properties"));
+		}catch(NullPointerException e){
+			println(e);
+		}
+	}
+}
+
+void midi_test(){
+	if(this.BLOB_ANALYSIS!=null){
+		MidiWrapper midi = this.BLOB_ANALYSIS.MIDI;
+		if(midi!=null) midi.send(0, 64, 127);
+	}
 }

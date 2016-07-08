@@ -5,6 +5,9 @@ public class Input{
 	private PApplet parent;
 
 	private Kinect kinect;
+	private boolean isKinect = false;
+	private boolean isWebcam = false;
+
 	private Capture webcam;
 	private int[] depthThreshold = {0, 2047};
 	private PImage img, pimg;
@@ -21,6 +24,7 @@ public class Input{
 		this.kinect = new Kinect(parent);
 
 		if (this.kinect.numDevices() > 0) {
+			this.isKinect = true;
 			this.kinect.initDepth();
 			this.kinect.enableColorDepth(true);
 
@@ -28,6 +32,7 @@ public class Input{
 			this.pimg = new PImage(this.kinect.width, this.kinect.height);
 			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
 		}else{
+			this.isWebcam = true;
 			this.webcam = new Capture(parent, 640, 480);
 			this.webcam.start();
 
@@ -44,7 +49,7 @@ public class Input{
 	// -------------------------------------------------------------------------
 	private PImage update(){ return this.update(false); }
 	private PImage update(boolean forceUpdate){
-		if (this.webcam != null) return this.update_webcam();
+		if (this.isWebcam && this.webcam!= null) return this.update_webcam();
 		else return this.update_kinect(forceUpdate);
 	}
 
@@ -121,7 +126,7 @@ public class Input{
 		stroke(250, 0, 100);
 
 		Rectangle c = this.getClip();
-		rect(c.x-2, c.y-2, c.width+4, c.height+4);
+		rect(c.x, c.y, c.width, c.height);
 
 		popStyle();
 	}

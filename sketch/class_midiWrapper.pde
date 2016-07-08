@@ -29,20 +29,22 @@ public class MidiWrapper{
 	}
 
 	// -------------------------------------------------------------------------
-	public void on(int channel, int number, int value){
+	public void send(int channel, int number, int value){
+		this.bus.sendControllerChange(channel, number, value);
+	}
+
+	public void on(int channel, int pitch, int velocity){
 		if(!this.sending){
-			// this.bus.sendNoteOn(channel, pitch, velocity);
-			// println("NoteOn("+channel+", "+pitch+", "+velocity+")");
-			this.bus.sendControllerChange(channel, number, value);
+			this.bus.sendNoteOn(channel, pitch, velocity);
+			println("NoteOn("+channel+", "+pitch+", "+velocity+")");
 			this.sending = true;
 		}
   	}
 
-  	public void off(int channel, int number, int value){
+  	public void off(int channel, int pitch, int velocity){
   		if(this.sending){
-  			// this.bus.sendNoteOff(channel, pitch, velocity);
-  			this.bus.sendControllerChange(channel, number, value);
-  			// println("NoteOff("+channel+", "+pitch+", "+velocity+")");
+  			this.bus.sendNoteOff(channel, pitch, velocity);
+  			println("NoteOff("+channel+", "+pitch+", "+velocity+")");
   			this.sending = false;
   		}
 	}

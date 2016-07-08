@@ -16,8 +16,42 @@ void initControls(int x, int y) {
 	cp5 = new ControlP5(this);
 	cp5.getProperties().setFormat(ControlP5.SERIALIZED);
 
+	cp5.addButton("reset")
+		.setLabel("R")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, (height-(y+=21)));
+
+	cp5.addButton("load")
+		.setLabel("L")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, (height-(y+=30)));
+
+	cp5.addButton("save")
+		.setLabel("S")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, (height-(y+=21)));
+
+	cp5.addButton("midi_test")
+		.setLabel("M")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, (height-(y+=30)));
+
+
+
 	visibleSnapshot_toggle = cp5.addRadioButton("radioButton")
-		.setPosition(x, y)
+		.setPosition(x+=(21+10+640+10), y=10)
 		.setSize(20,20)
 		.setColorLabel(color(0))
 		.setColorBackground(color(14, 0, 132))
@@ -85,7 +119,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setSize(20,20)
-		.setPosition(x, y+=41)
+		.setPosition(x, y+=30)
 		.getCaptionLabel()
 		.getStyle()
 		.setMargin(-19,0,0,25);
@@ -125,7 +159,7 @@ void initControls(int x, int y) {
 		.setColorLabel(color(0))
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
-		.setPosition(x, y+=41)
+		.setPosition(x, y+=30)
 		.setSize(w, 20)
 		.setRange(1, 100);
 
@@ -149,7 +183,7 @@ void initControls(int x, int y) {
 	// 	.setColorLabel(color(0))
 	// 	.setColorBackground(color(14, 0, 132))
 	// 	.setColorForeground(color(250, 0 ,100))
-	// 	.setPosition(x, y+=41)
+	// 	.setPosition(x, y+=30)
 	// 	.setSize(w, 20)
 	// 	.setRange(0.0, 10.0);
 
@@ -167,7 +201,7 @@ void initControls(int x, int y) {
 		.setColorLabel(color(0))
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
-		.setPosition(x, y+=41)
+		.setPosition(x, y+=30)
 		.setSize(20, (height-y-10))
 		.setRange(-10.0, 100);
 
@@ -181,7 +215,7 @@ void initControls(int x, int y) {
 	// -------------------------------------------------------------------------
 	console = cp5.addConsole(
 				cp5.addTextarea("txt")
-					.setPosition(x+=210, y=10)
+					.setPosition(x+=180, y=10)
 					.setSize((width-x-10), (height-y-10-graph.getHeight()-10))
 					.setFont(createFont("", 10))
 					.setLineHeight(14)
@@ -197,11 +231,7 @@ void initControls(int x, int y) {
 	buttonColor = cp5.getController("contrast").getColor().getForeground();
 	buttonBgColor = cp5.getController("contrast").getColor().getBackground();
 
-	try{
-		cp5.loadProperties(sketchPath("cp5.properties"));
-	}catch(NullPointerException e){
-		println(e);
-	}
+	load();
 }
 
 void toggleAdaptiveThreshold(boolean theFlag) {
