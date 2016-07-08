@@ -3,12 +3,14 @@ public RadioButton visibleSnapshot_toggle;
 public Range blobsize_slider;
 public Println console;
 public Textarea console_area;
+public Chart graph;
 
 
 
 // -------------------------------------------------------------------------
 void initControls(int x, int y) {
 	x+=10; y+=10;
+	if(cp5!=null) cp5.dispose(); // fix hard reset
 	cp5 = new ControlP5(this);
 
 	visibleSnapshot_toggle = cp5.addRadioButton("radioButton")
@@ -65,7 +67,7 @@ void initControls(int x, int y) {
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
 		.setSize(20,20)
-		.setPosition(x, y+=50)
+		.setPosition(x, y+=41)
 		.getCaptionLabel()
 		.getStyle()
 		.setMargin(-19,0,0,25);
@@ -105,7 +107,7 @@ void initControls(int x, int y) {
 		.setColorLabel(color(0))
 		.setColorBackground(color(14, 0, 132))
 		.setColorForeground(color(250, 0 ,100))
-		.setPosition(x, y+=50)
+		.setPosition(x, y+=41)
 		.setSize(125, 20)
 		.setRange(1, 100);
 
@@ -124,16 +126,52 @@ void initControls(int x, int y) {
 
 
 	// -------------------------------------------------------------------------
+	// cp5.addSlider("filter_cutoff")
+	// 	.setLabel("filter min cutoff")
+	// 	.setColorLabel(color(0))
+	// 	.setColorBackground(color(14, 0, 132))
+	// 	.setColorForeground(color(250, 0 ,100))
+	// 	.setPosition(x, y+=41)
+	// 	.setSize(125, 20)
+	// 	.setRange(0.0, 10.0);
 
+	// cp5.addSlider("filter_beta")
+	// 	.setLabel("filter Beta")
+	// 	.setColorLabel(color(0))
+	// 	.setColorBackground(color(14, 0, 132))
+	// 	.setColorForeground(color(250, 0 ,100))
+	// 	.setPosition(x, y+=21)
+	// 	.setSize(125, 20)
+	// 	.setRange(0.0, 0.1);
+
+	cp5.addSlider("filter_threshold")
+		.setLabel("")
+		.setColorLabel(color(0))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setPosition(x, y+=41)
+		.setSize(20, (height-y-10))
+		.setRange(-10.0, 100);
+
+	graph = cp5.addChart("dataflow")
+		.setPosition(x+=21, y)
+		.setSize((width-x-10), (height-y-10))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0, 100))
+		.setView(Chart.LINE);
+
+	// -------------------------------------------------------------------------
 	console = cp5.addConsole(
 				cp5.addTextarea("txt")
 					.setPosition(x+=210, y=10)
-					.setSize((width-x-10), (height-y-10))
+					.setSize((width-x-10), (height-y-10-graph.getHeight()-10))
 					.setFont(createFont("", 10))
 					.setLineHeight(14)
 					.setColor(color(0))
 					.setColorBackground(color(255))
 					.setColorForeground(color(250, 0, 100)));
+
+
 
 	setLock(cp5.getController("thresholdBlockSize"), true);
 	setLock(cp5.getController("thresholdConstant"), true);
@@ -170,7 +208,7 @@ void controlEvent(ControlEvent theEvent) {
 	if(theEvent.isFrom(visibleSnapshot_toggle)) {
 		visibleSnapshot = int(theEvent.getGroup().getValue());
 	}
-	if(theEvent.isFrom("blobSizeThreshold")) {
+	else if(theEvent.isFrom("blobSizeThreshold")) {
 		// min and max values are stored in an array.
 		// access this array with controller().arrayValue().
 		// min is at index 0, max is at index 1.
