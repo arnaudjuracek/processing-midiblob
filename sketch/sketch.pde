@@ -46,7 +46,7 @@ public int buttonColor, buttonBgColor,
 	maxDepth = 2047;
 public boolean
 	invert = false,
-	show_blobs = true,
+	show_blobs = false,
 	useAdaptiveThreshold = false;
 
 void setup(){
@@ -66,7 +66,6 @@ void setup(){
 
 // -------------------------------------------------------------------------
 void draw() {
-	String frame_name = "";
 	background(255);
 
 	BLOB_DETECTOR.detect(INPUT.getClippedDepthImage(), INPUT.getAbsoluteClip());
@@ -74,6 +73,7 @@ void draw() {
 
 	pushMatrix();
 	translate(10, 10);
+	String frame_name = "";
 	switch(visibleSnapshot){
 		case 0 :
 			image(logo, 0, 0);
@@ -143,11 +143,10 @@ void keyPressed() {
 		visibleSnapshot = (visibleSnapshot>0) ? visibleSnapshot-1 : 3;
 		visibleSnapshot_toggle.activate(visibleSnapshot);
 	}else if(keyCode == RIGHT) visibleSnapshot_toggle.activate(visibleSnapshot=++visibleSnapshot%4);
-
+	else if (key == 's'){
+		cp5.saveProperties(("cp5.properties"));
+		println("properties saved.");
+	}
 	else if (key == 'r') setup();
-  	else if (key == 'a') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]+1, 0, INPUT.getDepthThreshold()[1]);
-  	else if (key == 's') INPUT.getDepthThreshold()[0] = constrain(INPUT.getDepthThreshold()[0]-1, 0, INPUT.getDepthThreshold()[1]);
-  	else if (key == 'z') INPUT.getDepthThreshold()[1] = constrain(INPUT.getDepthThreshold()[1]+1, INPUT.getDepthThreshold()[0], 2047);
-  	else if (key == 'x') INPUT.getDepthThreshold()[1] = constrain(INPUT.getDepthThreshold()[1]-1, INPUT.getDepthThreshold()[0], 2047);
   	else if (key == 'f') INPUT.SMOOTH_FRAME = !INPUT.SMOOTH_FRAME;
 }

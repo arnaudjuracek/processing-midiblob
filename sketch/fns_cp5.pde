@@ -14,6 +14,7 @@ void initControls(int x, int y) {
 
 	if(cp5!=null) cp5.dispose(); // fix hard reset
 	cp5 = new ControlP5(this);
+	cp5.getProperties().setFormat(ControlP5.SERIALIZED);
 
 	visibleSnapshot_toggle = cp5.addRadioButton("radioButton")
 		.setPosition(x, y)
@@ -195,6 +196,12 @@ void initControls(int x, int y) {
 
 	buttonColor = cp5.getController("contrast").getColor().getForeground();
 	buttonBgColor = cp5.getController("contrast").getColor().getBackground();
+
+	try{
+		cp5.loadProperties(sketchPath("cp5.properties"));
+	}catch(NullPointerException e){
+		println(e);
+	}
 }
 
 void toggleAdaptiveThreshold(boolean theFlag) {
