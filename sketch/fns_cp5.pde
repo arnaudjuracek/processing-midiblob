@@ -1,5 +1,6 @@
 public ControlP5 cp5;
 public RadioButton visibleSnapshot_toggle;
+public Button midi_button;
 public Range blobsize_slider, depth_range;
 public Println console;
 public Textarea console_area;
@@ -40,7 +41,7 @@ void initControls(int x, int y) {
 		.setSize(20, 20)
 		.setPosition(x, (height-(y+=21)));
 
-	cp5.addButton("midi_test")
+	midi_button = cp5.addButton("midi_test")
 		.setLabel("M")
 		.setColorLabel(color(255))
 		.setColorBackground(color(14, 0, 132))

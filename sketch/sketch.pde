@@ -57,7 +57,7 @@ void setup(){
 	initControls(0, 0);
 
 
-	INPUT = new Input(this, new int[]{980, 1027});
+	INPUT = new Input(this);
 	BLOB_DETECTOR = new BlobDetector(this, 640, 480);
 	BLOB_ANALYSIS = new BlobAnalysis(this, BLOB_DETECTOR, graph);
 

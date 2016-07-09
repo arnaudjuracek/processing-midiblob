@@ -35,16 +35,18 @@ public class MidiWrapper{
 
 	public void on(int channel, int pitch, int velocity){
 		if(!this.sending){
+			midi_button.setColorBackground(color(250, 0, 100));
 			this.bus.sendNoteOn(channel, pitch, velocity);
-			println("NoteOn("+channel+", "+pitch+", "+velocity+")");
+			// println("NoteOn("+channel+", "+pitch+", "+velocity+")");
 			this.sending = true;
 		}
   	}
 
   	public void off(int channel, int pitch, int velocity){
   		if(this.sending){
+  			midi_button.setColorBackground(color(14, 0 , 132));
   			this.bus.sendNoteOff(channel, pitch, velocity);
-  			println("NoteOff("+channel+", "+pitch+", "+velocity+")");
+  			// println("NoteOff("+channel+", "+pitch+", "+velocity+")");
   			this.sending = false;
   		}
 	}

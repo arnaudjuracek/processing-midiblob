@@ -49,13 +49,14 @@ public class BlobAnalysis{
 		float fv = this.filter.filterUnitFloat(v);
 
 		if(v>0){
-			if(fv>this.threshold && pfv<this.threshold) this.MIDI.on(0, 64, 127);
-			else if(fv<this.threshold && pfv>this.threshold) this.MIDI.off(0, 64, 127);
+			if(fv>this.threshold && pfv<this.threshold) this.MIDI.send(0, 64, 127);
+			// if(fv>this.threshold && pfv<this.threshold) this.MIDI.on(0, 64, 127);
+			// else if(fv<this.threshold && pfv>this.threshold) this.MIDI.off(0, 64, 127);
 
 			this.chart.push("v", v);
 			this.chart.push("vf", fv);
 		}else{
-			this.MIDI.off(0, 64, 127);
+			// this.MIDI.off(0, 64, 127);
 		}
 
 		pfv = fv;
@@ -68,11 +69,5 @@ public class BlobAnalysis{
 			// avg /= this.detector.blobList.size();
 		}
 		return avg;
-	}
-
-
-	private void graph(){
-		// this.chart.push("mousex", map(mouseX, 0, width, -1, 1) * 10);
-		// this.chart.push("mousey", map(mouseY, 0, height, -1, 1) * 10);
 	}
 }

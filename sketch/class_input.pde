@@ -17,12 +17,10 @@ public class Input{
 
 
 	// -------------------------------------------------------------------------
-	public Input(PApplet parent, int[] depthThreshold){
+	public Input(PApplet parent){
 		this.parent = parent;
-		this.depthThreshold = depthThreshold;
 
 		this.kinect = new Kinect(parent);
-
 		if (this.kinect.numDevices() > 0) {
 			this.isKinect = true;
 			this.kinect.initDepth();
@@ -42,14 +40,12 @@ public class Input{
 		}
 	}
 
-	public Input(PApplet parent){ this(parent, new int[]{0, 2047}); }
-
 
 
 	// -------------------------------------------------------------------------
 	private PImage update(){ return this.update(false); }
 	private PImage update(boolean forceUpdate){
-		if (this.isWebcam && this.webcam!= null) return this.update_webcam();
+		if (this.isWebcam) return this.update_webcam();
 		else return this.update_kinect(forceUpdate);
 	}
 
