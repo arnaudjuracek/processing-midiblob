@@ -1,6 +1,6 @@
 public ControlP5 cp5;
 public RadioButton visibleSnapshot_toggle;
-public Button midi_button;
+public Button midi_button, kinect_up_button, kinect_down_button;
 public Range blobsize_slider, depth_range;
 public Println console;
 public Textarea console_area;
@@ -49,7 +49,23 @@ void initControls(int x, int y) {
 		.setSize(20, 20)
 		.setPosition(x, (height-(y+=30)));
 
+	kinect_up_button = cp5.addButton("kinect_up")
+		.setLabel("^")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, y=10);
 
+	kinect_down_button = cp5.addButton("kinect_down")
+		.setLabel("v")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, y+=21);
+
+	// -------------------------------------------------------------------------
 
 	visibleSnapshot_toggle = cp5.addRadioButton("radioButton")
 		.setPosition(x+=(21+10+640+10), y=10)

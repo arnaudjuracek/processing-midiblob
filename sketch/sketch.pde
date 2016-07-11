@@ -62,6 +62,8 @@ void setup(){
 	BLOB_ANALYSIS = new BlobAnalysis(this, BLOB_DETECTOR, graph);
 
 	setLock(depth_range, (!INPUT.isKinect));
+	setLock(kinect_up_button, (!INPUT.isKinect));
+	setLock(kinect_down_button, (!INPUT.isKinect));
 }
 
 
@@ -145,7 +147,8 @@ void keyPressed() {
 		visibleSnapshot = (visibleSnapshot>0) ? visibleSnapshot-1 : 3;
 		visibleSnapshot_toggle.activate(visibleSnapshot);
 	}else if(keyCode == RIGHT) visibleSnapshot_toggle.activate(visibleSnapshot=++visibleSnapshot%4);
-
+	else if(keyCode == UP) kinect_up();
+	else if(keyCode == DOWN) kinect_down();
 	else if (key == 's') save();
 	else if (key == 'r') reset();
   	else if (key == 'l') load();
@@ -173,8 +176,30 @@ void load(){
 }
 
 void midi_test(){
-	if(this.BLOB_ANALYSIS!=null){
-		MidiWrapper midi = this.BLOB_ANALYSIS.MIDI;
+	if(BLOB_ANALYSIS!=null){
+		MidiWrapper midi = BLOB_ANALYSIS.MIDI;
 		if(midi!=null) midi.send(0, 64, 127);
+	}
+}
+
+
+void kinect_up(){
+	if(INPUT!=null){
+		if(INPUT.isKinect){
+			INPUT.kinect_angle = constrain(++INPUT.kinect_angle, 0, 30);
+			INPUT.kinect.setTilt(INPUT.kinect_angle);
+			println("up");
+		}
+	}
+}
+
+
+void kinect_down(){
+	if(INPUT!=null){
+		if(INPUT.isKinect){
+			INPUT.kinect_angle = constrain(--INPUT.kinect_angle, 0, 30);
+			INPUT.kinect.setTilt(INPUT.kinect_angle);
+			println("down");
+		}
 	}
 }

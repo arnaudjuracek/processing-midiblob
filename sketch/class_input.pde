@@ -7,6 +7,7 @@ public class Input{
 	private Kinect kinect;
 	private boolean isKinect = false;
 	private boolean isWebcam = false;
+	private float kinect_angle;
 
 	private Capture webcam;
 	private int[] depthThreshold = {0, 2047};
@@ -25,7 +26,7 @@ public class Input{
 			this.isKinect = true;
 			this.kinect.initDepth();
 			this.kinect.enableColorDepth(true);
-
+			this.kinect_angle = this.kinect.getTilt();
 			this.img = new PImage(this.kinect.width, this.kinect.height);
 			this.pimg = new PImage(this.kinect.width, this.kinect.height);
 			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
