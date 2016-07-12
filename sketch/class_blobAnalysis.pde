@@ -65,8 +65,9 @@ public class BlobAnalysis{
 	private float computeAverageDelta(){
 		float avg = 0;
 		if(this.detector.blobList.size()>0){
-			for(Blob b : this.detector.blobList) avg += b.getDeltaPosition();
-			// avg /= this.detector.blobList.size();
+			// for(Blob b : this.detector.blobList) avg += b.getDeltaPosition();
+			for(Blob b : this.detector.blobList) avg += b.getDelta();
+			avg /= this.detector.blobList.size();
 		}
 		return avg;
 	}

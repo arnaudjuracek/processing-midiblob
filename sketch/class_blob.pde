@@ -8,7 +8,7 @@ public class Blob {
 	public int timer;
 	public int id;
 
-	private PVector position, p_position;
+	private PVector position, p_position, size, p_size;
 
 	public Blob(PApplet parent, int id, Contour c) {
 		this.parent = parent;
@@ -21,6 +21,11 @@ public class Blob {
 
 		this.position = this.computePosition();
 		this.p_position = this.position;
+		// this.p_position = new PVector(0,0);
+
+		this.size = this.computeSize();
+		this.p_size = this.size;
+		// this.p_size = new PVector(0,0);
 	}
 
 
@@ -56,6 +61,9 @@ public class Blob {
 		this.contour = new Contour(parent, newC.pointMat);
 		this.p_position = this.position;
 		this.position = this.computePosition();
+
+		this.p_size = this.size;
+		this.size = this.computeSize();
 	}
 
 	public void countDown(){ this.timer--; }
@@ -68,8 +76,19 @@ public class Blob {
 		return new PVector( r.x + r.width*.5, r.y + r.height*.5 );
 	}
 
+	public PVector computeSize(){
+		Rectangle r = this.getBoundingBox();
+		return new PVector(r.width, r.height);
+	}
+
 	public PVector getPosition(){ return this.position; }
 	public PVector getPrevPosition(){ return this.p_position; }
 	public float getDeltaPosition(){ return this.position.dist(this.p_position); }
+
+	public PVector getSize(){ return this.size; }
+	public PVector getPrevSize(){ return this.p_size; }
+	public float getDeltaSize(){ return this.size.dist(this.p_size); }
+
+	public float getDelta(){ return this.getDeltaSize() + this.getDeltaPosition(); }
 }
 
