@@ -1,4 +1,5 @@
 build-tmp/
+application/
 *.zip
 
 kaleidos_clip.3dm
