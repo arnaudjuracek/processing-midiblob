@@ -6,6 +6,7 @@ public class BlobAnalysis{
 	private SignalFilter filter;
 
 	private int max;
+	private float MAX_FV;
 	private float threshold = 10;
 
 	// -------------------------------------------------------------------------
@@ -30,6 +31,7 @@ public class BlobAnalysis{
 
 		this.filter = new SignalFilter(parent);
 		this.MIDI = new MidiWrapper(parent);
+		this.MAX_FV = 0;
 	}
 
 
@@ -49,14 +51,22 @@ public class BlobAnalysis{
 		float fv = this.filter.filterUnitFloat(v);
 
 		if(v>0){
-			if(fv>this.threshold && pfv<this.threshold) this.MIDI.send(0, 64, 127);
+			// if(fv>this.threshold && pfv<this.threshold) this.MIDI.send(0, 64, 127);
+			if(fv>this.threshold) this.MIDI.trigger(int(map(fv, this.threshold, this.MAX_FV, 0, 127)), (pfv<this.threshold));
 			// if(fv>this.threshold && pfv<this.threshold) this.MIDI.on(0, 64, 127);
 			// else if(fv<this.threshold && pfv>this.threshold) this.MIDI.off(0, 64, 127);
-
+			if(fv > this.MAX_FV) this.MAX_FV = fv;
 			this.chart.push("v", v);
 			this.chart.push("vf", fv);
-		}else{
+		}
+
+		if(fv<this.threshold && pfv>this.threshold){
 			// this.MIDI.off(0, 64, 127);
+			for(int note : this.MIDI.NOTES){
+				this.MIDI.send(this.MIDI.CHANNEL, note, 0);
+			}
+
+			if(this.MAX_FV > 0) this.MAX_FV = 0;
 		}
 
 		pfv = fv;

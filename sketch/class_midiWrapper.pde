@@ -2,20 +2,27 @@ public class MidiWrapper{
 
 	private PApplet parent;
 	private MidiBus bus;
-
 	private boolean sending;
+
+	public int[] NOTES = {20};
+	public int
+		INDEX = 0,
+		CHANNEL = 10;
+
 
 
 
 	// -------------------------------------------------------------------------
 	public MidiWrapper(PApplet parent){
 		this.parent = parent;
-		// this.bus = new MidiBus(this, -1, 1);
 		this.bus = this.prompt();
+		// this.bus = new MidiBus(this, -1, 2);
 		this.sending = false;
+		this.INDEX = 0;
 	}
 
 	public MidiBus prompt(){
+		MidiBus bus = null;
 		String device = (String) JOptionPane.showInputDialog(
 			null,
 			"Select a Midi Output Device",
@@ -25,10 +32,32 @@ public class MidiWrapper{
 			MidiBus.availableOutputs(),
 			MidiBus.availableOutputs()[0]
 		);
-		return new MidiBus(this, -1, (int) ((device==null) ? 0 : int(device)));
+
+		try{
+			bus = new MidiBus(this, -1, device);
+		}catch(NullPointerException e){
+			println(e);
+			exit();
+		}
+
+		return bus;
 	}
 
 	// -------------------------------------------------------------------------
+	public void trigger(int value){ this.trigger(value, false); }
+	public void trigger(){ this.trigger(0, false); }
+	public void trigger(boolean newNote){ this.trigger(0, newNote); }
+	public void trigger(int value, boolean newNote){
+		if(newNote){
+			// this.INDEX = int(random(this.NOTES.length));
+			this.INDEX = ++this.INDEX%this.NOTES.length;
+		}
+
+		this.bus.sendControllerChange(this.CHANNEL, this.NOTES[this.INDEX], value);
+		println("CC("+ this.CHANNEL+ ", "+ this.NOTES[this.INDEX] +", "+ value +")");
+	}
+
+
 	public void send(int channel, int number, int value){
 		this.bus.sendControllerChange(channel, number, value);
 	}
