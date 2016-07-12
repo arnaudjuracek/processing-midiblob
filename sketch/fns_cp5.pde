@@ -65,6 +65,14 @@ void initControls(int x, int y) {
 		.setSize(20, 20)
 		.setPosition(x, y+=21);
 
+	cp5.addToggle("KINECT_RGB")
+		.setLabel("K")
+		.setColorLabel(color(255))
+		.setColorBackground(color(14, 0, 132))
+		.setColorForeground(color(250, 0 ,100))
+		.setSize(20, 20)
+		.setPosition(x, y+=21);
+
 	// -------------------------------------------------------------------------
 
 	visibleSnapshot_toggle = cp5.addRadioButton("radioButton")

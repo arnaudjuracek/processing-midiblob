@@ -47,6 +47,7 @@ public int buttonColor, buttonBgColor,
 public boolean
 	invert = false,
 	show_blobs = false,
+	KINECT_RGB = false,
 	useAdaptiveThreshold = false;
 
 void setup(){
@@ -152,7 +153,12 @@ void keyPressed() {
 	else if (key == 's') save();
 	else if (key == 'r') reset();
   	else if (key == 'l') load();
-
+  	else if (key == 'm'){
+  			if(BLOB_ANALYSIS!=null){
+			MidiWrapper midi = BLOB_ANALYSIS.MIDI;
+			if(midi!=null) midi.trigger(true);
+		}
+  	}
   	else if (key == 'f') INPUT.SMOOTH_FRAME = !INPUT.SMOOTH_FRAME;
 }
 
@@ -178,7 +184,7 @@ void load(){
 void midi_test(){
 	if(BLOB_ANALYSIS!=null){
 		MidiWrapper midi = BLOB_ANALYSIS.MIDI;
-		if(midi!=null) midi.send(0, 64, 127);
+		if(midi!=null) midi.trigger(true);
 	}
 }
 
@@ -188,7 +194,7 @@ void kinect_up(){
 		if(INPUT.isKinect){
 			INPUT.kinect_angle = constrain(++INPUT.kinect_angle, 0, 30);
 			INPUT.kinect.setTilt(INPUT.kinect_angle);
-			println("up");
+			println("kinect up");
 		}
 	}
 }
@@ -199,7 +205,7 @@ void kinect_down(){
 		if(INPUT.isKinect){
 			INPUT.kinect_angle = constrain(--INPUT.kinect_angle, 0, 30);
 			INPUT.kinect.setTilt(INPUT.kinect_angle);
-			println("down");
+			println("kinect down");
 		}
 	}
 }

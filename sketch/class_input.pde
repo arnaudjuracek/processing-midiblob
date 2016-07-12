@@ -1,6 +1,6 @@
 public class Input{
 
-	public boolean SMOOTH_FRAME = true;
+	public boolean SMOOTH_FRAME = false;
 
 	private PApplet parent;
 
@@ -25,11 +25,13 @@ public class Input{
 		if (this.kinect.numDevices() > 0) {
 			this.isKinect = true;
 			this.kinect.initDepth();
+			this.kinect.initVideo();
 			this.kinect.enableColorDepth(true);
 			this.kinect_angle = this.kinect.getTilt();
 			this.img = new PImage(this.kinect.width, this.kinect.height);
 			this.pimg = new PImage(this.kinect.width, this.kinect.height);
 			this.clip = new Rectangle(0, 0, this.kinect.width, this.kinect.height);
+
 		}else{
 			this.isWebcam = true;
 			this.webcam = new Capture(parent, 640, 480);
@@ -47,6 +49,7 @@ public class Input{
 	private PImage update(){ return this.update(false); }
 	private PImage update(boolean forceUpdate){
 		if (this.isWebcam) return this.update_webcam();
+		else if(KINECT_RGB) return this.kinect.getVideoImage();
 		else return this.update_kinect(forceUpdate);
 	}
 

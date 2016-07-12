@@ -85,7 +85,7 @@ public class BlobDetector{
 	  	if (blobList.isEmpty()) {
 			// Just make a Blob object for every face Rectangle
 			for (int i = 0; i < newBlobContours.size(); i++) {
-		  		println("new blob detected with ID: " + blobCount);
+		  		// println("new blob detected with ID: " + blobCount);
 		  		blobList.add(new Blob(this.parent, blobCount, newBlobContours.get(i)));
 		  		blobCount++;
 			}
@@ -111,7 +111,7 @@ public class BlobDetector{
 
 			for (int i = 0; i < newBlobContours.size(); i++) {
 				if (!used[i]) {
-					println("new blob detected with ID: " + blobCount);
+					// println("new blob detected with ID: " + blobCount);
 					blobList.add(new Blob(this.parent, blobCount, newBlobContours.get(i)));
 					//blobList.add(new Blob(blobCount, blobs[i].x, blobs[i].y, blobs[i].width, blobs[i].height));
 					blobCount++;
